@@ -1,137 +1,160 @@
-# Voice Trainer Pendant
+# Welcome to the Voice Trainer! 
 
-The Voice Trainer is an open-source wearable device designed to monitor vocal pitch and deliver real-time haptic feedback when pitch drops below a target threshold. 
-
-The system uses a bone-conduction MEMS microphone pressed against the neck to isolate vocal cord vibrations from ambient acoustic noise, processes the signal locally on an ESP32-S3 microcontroller using the YIN pitch-tracking algorithm, and drives an ERM coin vibration motor via an I2C haptic driver.
+This is a wearable device designed to monitor vocal frequency and provide haptic feedback when your pitch goes too low! It is built around bone-conduction sensing, the YIN pitch-tracking algorithm, and an ESP32-S3 microcontroller.
 
 ---
 
 ## Features
+**Bone Conducting Microphone:** This project utilizes an awesome little bone conducting microphone (VMM-1627L-R) so that we can completely eliminate ambient noise.
 
-- **Bone-Conduction Sensing:** Utilizes a PUI Audio VMM-1627L-R contact microphone positioned on the neck to eliminate ambient room noise and acoustic cross-talk.
-- **Low-Latency Pitch Tracking:** Implements the autocorrelation-based YIN algorithm running directly on the ESP32-S3 dual-core processor.
-- **Configurable Haptics:** Powered by an Adafruit DRV2605L driver and an ERM coin motor to deliver distinct tactile clicks and buzzes.
-- **Low-Profile Enclosure:** Two-piece 3D-printed enclosure designed to sit flat against the sternum under clothing.
+**Low-Latency Pitch Tracking:** This project implements the autocorrelation-based YIN algorithm on the ESP32-S3 so it's pretty quick :) It has plenty of power to run this program but I have yet to see if it gets too hot :'(
+
+**Haptic Feedback:** With the addition of a DRV2605L motor driver and the little coin motor with it, it can generate a variety of haptic feedback signals. If you want to customize it further to make different vibrations when you fall below the pitch you want, please see the customization section.
 
 ---
 
 ## Bill of Materials
 
-### Core Electronics
-| Component | Description | Source / Reference |
-| :--- | :--- | :--- |
-| **Microcontroller** | SparkFun ESP32-S3 Thing Plus (or equivalent ESP32-S3 with JST-PH LiPo, USB-C, and Qwiic) | SparkFun DEV-20982 |
-| **Contact Microphone** | PUI Audio VMM-1627L-R MEMS bone-conduction capsule | DigiKey 668-VMM-1627L-R-ND |
-| **Preamplifier** | Adafruit MAX4466 Electret Microphone Amplifier (modified) | Adafruit PID 1063 |
-| **Haptic Driver** | Adafruit DRV2605L Haptic Motor Controller (STEMMA QT / Qwiic) | Adafruit PID 2305 |
-| **Haptic Actuator** | 10 mm ERM Coin Vibration Motor (2.7 mm thick) | Adafruit PID 1201 |
-| **Battery** | 1S 3.7V 1100 mAh LiPo Cell (~49.3 x 33.8 x 5.8 mm) with JST-PH 2.0 mm plug | Standard 1S LiPo |
-| **Power Switch** | Sub-miniature SPDT slide switch (22.8 mm ear spacing, 11.8 x 5.2 mm body) | Standard slide switch |
-| **Qwiic Cable** | 50 mm 4-pin JST-SH cable | SparkFun / Adafruit |
-| **Interconnect Wire** | 30 AWG silicone or enameled magnet wire | Generic |
 
-### Fasteners & Hardware
-| Item | Specification | Quantity |
-| :--- | :--- | :--- |
-| **Heat-Set Threaded Inserts** | M2 x 2 mm length x 3.2 mm outer diameter | 4 |
-| **Fasteners** | M2 x 4 mm or M2 x 5 mm countersunk socket head cap screws | 4 |
-| **Cordage** | Paracord sleeve or 2 mm satin necklace cord | ~1 meter |
+ **SparkFun ESP32-S3 Thing Plus**: Really any ESP32-S3 that has USB-C, LiPo JST-PH 2.0mm with onboard charging, STEMMA-QT connector
 
-### Tools Required
-- Temperature-controlled soldering station (chisel and fine-point tips)
-- Soldering flux (liquid or gel) and fine solder wire
-- Tweezers and helping hands
-- Heat gun or lighter (for heat-shrink tubing)
-- Wire strippers / flush cutters
-- 3D printer (PLA or PETG, 0.4 mm nozzle, 0.16–0.20 mm layer height)
-- Soldering iron tip for heat-set insert installation (or standard cone tip)
+ **VMM-1627L-R**  MEMS bone-conduction microphone capsule | Analog OUT, VDD, GND |
+ https://www.digikey.com/en/products/detail/pui-audio-inc/VMM-1627L-R/17085367
+
+ **MAX4466 Breakout**  Preamplifier with adjustable gain  Analog IN/OUT (Neck Node) 
+
+ **Adafruit DRV2605L**  Haptic motor driver  I2C (Qwiic / STEMMA QT) 
+
+ **ERM Coin Vibration Motor**  Tactile feedback actuator  Connected to DRV2605L. Also from Adafruit.
+
+ **1100 mAh 1S LiPo Battery**  3.7V power cell w/ JST-PH 2.0mm (2-pin) 
+
+ **30 AWG Magnet / Silicone Wire**  Used to connecte everything together.
+
+ **Soldering Flux** This is a must.
+
+**Solder** Need some to connect it all together haha.
+
+**3-Prong Switch** Thats just what I ended up using but it doesn't really matter. Just needs to turn on and off!
+
+**Heat shrink wrapping** Make sure to not get any short circuits
 
 ---
+## Tools Required
+
+**3D Printer** Any printer should do. Just have some PLA or PETG around.
+
+**Soldering Iron** I recommend a high quality soldering station and some helping hands to hold everything together.
+
+**Wire Strippers/Clippers** 
+
+**Heat gun/Hair dryer** For heat shrink wrap
+
+
+---
+
+## Disclaimers
+I am not an expert just a girl frustrated with not remembering to use my voice. I am also not very good at soldering nor an electrical engineer. If I can make this, so can you!
+
 
 ## Hardware Modifications & Wiring
 
-### 1. VMM-1627L-R MEMS Capsule Preparation
-Review the [VMM-1627L-R Datasheet](https://puiaudio.com/file/specs-VMM-1627L-R.pdf) for the bottom pad layout before starting:
-- **Pad 3:** VDD (Power)
-- **Pad 6:** OUT (Analog Signal)
-- **Pads 1, 2, 4, 5:** Ground (GND)
+### 1. Prepare the VMM-1627L-R
 
-> **CRITICAL:** Do not cover or allow glue/solder into the acoustic relief hole on the top face of the capsule. Doing so will destroy the MEMS diaphragm.
+Here is the datasheet (you will need it): https://puiaudio.com/file/specs-VMM-1627L-R.pdf
 
-1. Secure the microphone capsule inverted on a work surface using Kapton or masking tape, exposing the solder pads.
-2. Apply liquid flux to pads 3, 4, and 6.
-3. Using dead-bug soldering techniques and fine 30 AWG wire:
-   - Solder a red wire to **Pad 3 (VDD)**.
-   - Solder a green wire to **Pad 6 (OUT)**.
-   - Solder a black wire to **Pad 4 (GND)**.
-4. Apply a small drop of epoxy or UV-curable glue around the wire joints for strain relief, avoiding the relief hole.
+Pay close attention to the pad layout and how there is an identifiable dot closer to pads 6, 5, 4.
+
+This is by far probably the most challenging part of the build. It requires patience and a steady hand but it is doable for anyone. Infact, I successfully did it on my first attempt. I recommend watching this video on 'dead bug soldering': https://www.youtube.com/watch?v=q53uPn1mKc0
+
+I prepared a space on a piece of plywood and taped the VMM-1627L-R down into place but made sure to keep the top open. Orient it so you know which pads are on which side using the datasheet.
+
+Flux is a **MUST**. I put a little bit of liquid flux into one of my used estrodial needles hahaha and squirted it onto the pads. I then followed the datasheet from here. I soldered a wire to pad 3 for power (VDD) and to pad 6 for the output (OUT). Any other pad can be used for ground. I ended up choosing pad 4 for my ground but it doesn't matter.
+
+The image shows the mic wired up on the MAX4466 amplifier
+![MAXX4466 with mic](images/MAX4466_MIC_TOP.jpg)
+
+After the pads are soldered on, make sure to secure it in place with some super glue or hot glue.
+
+It is **CRUCIAL** you do not cover the relief hole on the other side of the microphone as this will destroy the microphone.
+
+We will get into modifying the amplifier and attaching the microphone onto it next.
 
 ### 2. MAX4466 Preamplifier Modification
-Stock MAX4466 breakout boards incorporate a 2.2k pull-up bias resistor ($R_1$) configured for two-terminal electret capsules. Because the VMM-1627L-R is an active 3-pin MEMS device with an internal buffer, $R_1$ must be removed to avoid DC line saturation:
+Stock MAX4466 breakout boards include a pull-up bias resistor designed for 2-pin electret capsules. Because the VMM-1627L-R is an active 3-pin MEMS microphone with its own internal buffer, the DC bias resistor must be removed:
+* **Remove electret microphone** Desolder the microphone + and - pins and pop it out!
+* **Remove Resistor R1:** Desolder or cut R1 connected to the positive input pad to decouple DC power from the audio input line.
+![MAX4466 Intact](images/MAX4466.jpg)
+It is easier to remove if you put a glob of solder on the tip and then cover it to remove it.
+* **Solder on the VMM-1626L-R:** 
+Its time to connect the VMM-1627L-R to the amplifier since it is ready!
+We will solder the VMM OUT to the positive (+) and the VMM GND to negative (-). VMM power (VDD) will be hooked right up to the breakout board VCC
+![MAX4466 pinout](images/MAX4466_TOP_PINOUT.jpg)
 
-1. **Remove Electret Capsule:** Desolder the default microphone capsule pins and remove the barrel.
-2. **Remove Bias Resistor $R_1$:** Locate $R_1$ connected to the microphone positive input terminal. Apply a blob of solder across both pads to lift the surface-mount resistor off the board. Clean pads with solder wick.
-3. **Attach VMM-1627L-R:**
-   - Solder the **OUT** wire (green) to the breakout input pad (`+`).
-   - Solder the **GND** wire (black) to the breakout ground pad (`-`).
-   - Solder the **VDD** wire (red) directly to the `VCC` pin on the MAX4466 board.
+### 3. Battery Modification and Polarity Check
 
-### 3. Battery Cable and Switch Integration
-1. **Polarity Verification:** Inspect the JST-PH 2.0 mm connector against the SparkFun ESP32-S3 silkscreen markings. If polarity is reversed, lift the connector retention tabs with a precision pick, withdraw the crimp terminals, and swap positions.
-2. **Switch Wiring:** Cut the positive (red) lead of the battery harness. Strip and tin both cut ends.
-3. Slide heat-shrink tubing over both wires, solder one end to the center common pin of the slide switch, and solder the other end to one of the outer pins. Shrink the tubing to insulate the terminals.
+Before plugging your battery into the ESP32 board, it is imperative that you check the polarity of the JST plug to make sure the positive and negative match. If they do not, you **MUST** pop the pins out and swap their positions. You can use something small to pry the plastic up and pull the pins out. Make sure not to short it.
 
-### 4. Haptic Driver and Motor Assembly
-1. Connect the Adafruit DRV2605L breakout to the SparkFun ESP32-S3 using a 50 mm Qwiic / STEMMA QT cable.
-2. Solder the red wire from the 10 mm ERM coin motor to the `+` motor output pad on the DRV2605L.
-3. Solder the blue (or black) wire from the motor to the `-` motor output pad on the DRV2605L.
+Next you should cut in the positive wire and solder in a switch. Put it on the middle and outer pin. It doesn't matter which one. Make sure to add your heat shrink wrap before soldering.
 
-### 5. Interconnect Pinout
+![Battery Modification](images/BATTERY_MOD.jpg)
 
-| From: Neck Node (MAX4466) | To: Main Pendant (ESP32-S3 Thing Plus) | Notes |
-| :--- | :--- | :--- |
-| **VCC** | **3V3** | 3.3V Power Bus |
-| **GND** | **GND** | System Ground |
-| **OUT** | **GPIO 14** | ADC1 Analog Input |
+### 4. Haptic Motor Driver and Coin Motor Assembly
+ This is thankfully very easy. Simply solder the red wire to the + and blue wire to the - on the DRV2605L board.
 
-| From: DRV2605L Driver | To: ESP32-S3 Thing Plus | Notes |
-| :--- | :--- | :--- |
-| **Qwiic Port** | **Qwiic Port** | Dedicated 3.3V, GND, SDA, SCL bus |
+![DRV2605L Front](images/DRIVER_FRONT.jpg)
+![DRV2605L Back](images/DRIVER_BACK.jpg)
 
----
 
-## Mechanical Assembly
 
-1. **Insert Installation:** Use a soldering iron set to approximately 220°C to press four M2 x 2 x 3.2 mm brass threaded inserts into the four corner bosses of `Pendant_Base`. Ensure the inserts sit flush with the top lip.
-2. **Actuator Placement:** Press the 10 mm coin motor into the circular recess in the floor on the right side of the base. Route motor wires through the wire relief slot.
-3. **Battery Placement:** Lay the 1100 mAh LiPo flat in the main center-left battery bay.
-4. **Microcontroller Installation:** Set the SparkFun ESP32-S3 Thing Plus onto the internal end ledges. The USB-C port aligns with the cutout on the left wall.
-5. **Switch and Mezzanine:**
-   - Drop the slide switch into the captive vertical slot along the top wall.
-   - Seat the DRV2605L driver on the upper right mezzanine shelves using the printed locator pins.
-6. **Neck Harness Routing:** Route the three-wire bundle from the neck sensor through the open U-notch on the upper-left wall.
-7. **Lid Closure:** Position `Pendant_Lid` on top of the base and fasten with four M2 countersunk screws.
+### 5. Final Assembly
 
----
+Time to put it all together! Place the bone conducting mic/amplifier combo into the neck box. Thread the three wires through the hole in the side and then solder them into the pins on the ESP32. 
 
-## Firmware Setup & Calibration
+![Mic Assembly](images/MIC_IN_CASE.jpg)
 
-### Dependencies
-Install the following libraries via the Arduino IDE Library Manager:
-- `Adafruit DRV2605 Library`
+You will put power wire (red) to the 3.3v pin, ground (black) to GND, and the analog output (green) to pin 14.
 
-Ensure the ESP32 board support package (by Espressif) is installed under **Tools → Board → Boards Manager**.
+![Wiring](images/WIRING_PINOUT.jpg)
 
-### Configuration Parameters
-Adjust these constants at the beginning of the sketch to tune detection:
+Lastly, plug in everything you need! STEMMA QT and battery connectors to each part.
 
-```cpp
-// Target pitch frequency threshold (Hz)
-// Values below this frequency trigger a haptic event
+![Connected Cables](images/WIRING_COMPLETE.jpg)
+
+After all of this, it is time to throw it all into a case. I have a **VERY** rough 3D printed case so far but it works. I wouldn't be caught dead wearing it in public though :'(
+
+Check out the 3D models for the case.
+
+## Customization
+
+### 1. Changing the Pitch Threshold
+
+In order to adjust the pitch you want it to activate at, simply open up the arduino IDE and change line 12:
+
 #define PITCH_THRESHOLD_HZ 175.0f
 
-// Minimum signal amplitude required before running pitch detection
-#define SILENCE_THRESHOLD  200
+I just chose 175 because it is a bit lower than a female average minimum.
 
-// DRV2605L ROM Waveform Library Index (e.g., 47 = Strong Buzz 100%, 1 = Strong Click)
-#define WAVEFORM           47
+### 2. Changing the Haptic Feedback
+
+To change the haptic feedback, Just change the number for the WAVEFORM on line 27.
+
+#define WAVEFORM 47
+
+
+ 47 is the number for the strong buzz. Other interesting candidates could be 1 or 12. A click or triple click. Look up the library for various different haptic effects. There are many!
+
+### 3. Make your own pretty case! <3
+
+The current case design is a bit bland.
+
+
+## Future Plans
+
+### 1. Custom PCB for Mic/Amp
+
+I think that this project would benefit greatly from a custom PCB, but I am sadly not an electrical engineer. While the MAX4466 schematics and board are publically avaliable on the Adafruit website, I have yet to create a modified version of the amplifier board that includes a VMM-1627L-R instead of an electret microphone as well as remove the pull-up resistor. Sadly these things both cost time and money.
+
+### 2. Bluetooth/Phone integration
+
+It would be nice for anyone who wants to change some setting on the fly to be able to. Maybe allow the pitch to be changed and the haptic feedback. I could also integrate data-tracking so you can follow your vocal pitch throughout the day. This is pretty low on the list of things I want done want the main functions to be rock-solid.
