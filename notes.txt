@@ -1,0 +1,9 @@
+1100 mAh LiPo Battery 49.3 x 33.8 x 5.8 mm
+
+Slide switch 22.8 mm long with ears, while box is 5.7mm wide on the front face with the ears, 5.2 mm tall, 11.8 long without the ears on the bottom
+
+Sliding knob is 2.9 x 2.9 x 2.9 mm and slides about 6.0 mm total (so shifts one whole distance of itself over)
+
+Total high plugged in is 14.5 mm
+
+I will want to wear it under a shirt most likely so I have the best chance of feeling the haptic feedback. As low profile and unobtrusive as possible. We can maybe make other designs later. I also want to mention I have a full metric screw set and heat-set inserts that can be used to fix things in place if you want to include that. No pressure. I want to finally publish these project files on github so I can be done with it.

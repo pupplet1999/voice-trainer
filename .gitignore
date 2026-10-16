@@ -1,0 +1,20 @@
+# FreeCAD lock & backup files
+*.FCStd1
+*.FCStd2
+*.FCBak
+*.swp
+*.gcode
+
+# Arduino / PlatformIO builds
+build/
+.pio/
+*.hex
+*.bin
+*.elf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+old_files/
+VMM-1627L-R.pdf
