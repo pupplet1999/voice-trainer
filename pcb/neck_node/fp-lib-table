@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "Pitch_Pendant") (type "KiCad") (uri "${KIPRJMOD}/Pitch_Pendant.pretty") (options "") (descr ""))
+)
