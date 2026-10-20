@@ -153,7 +153,7 @@ The current case design is a bit bland.
 
 ### 1. Custom PCB for Mic/Amp
 
-I think that this project would benefit greatly from a custom PCB, but I am sadly not an electrical engineer. While the MAX4466 schematics and board are publically avaliable on the Adafruit website, I have yet to create a modified version of the amplifier board that includes a VMM-1627L-R instead of an electret microphone as well as remove the pull-up resistor. Sadly these things both cost time and money.
+I think that this project would benefit greatly from a custom PCB, but I am sadly not an electrical engineer. I have working plans now for a neck node board. I just have to get the time to order it and see if it works. The plans are in the pcb/neck_node files.
 
 ### 2. Bluetooth/Phone integration
 
