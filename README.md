@@ -59,7 +59,18 @@ I am not an expert just a girl frustrated with not remembering to use my voice. 
 
 ## Hardware Modifications & Wiring
 
-### 1. Prepare the VMM-1627L-R
+### 1. MAX4466 Preamplifier Modification
+Stock MAX4466 breakout boards include a pull-up bias resistor designed for 2-pin electret capsules. Because the VMM-1627L-R is an active 3-pin MEMS microphone with its own internal buffer, the DC bias resistor must be removed:
+* **Remove electret microphone** Desolder the microphone + and - pins and pop it out!
+* **Remove Resistor R1:** Desolder or cut R1 connected to the positive input pad to decouple DC power from the audio input line.
+![MAX4466 Intact](images/MAX4466.jpg)
+It is easier to remove if you put a glob of solder on the tip and then cover it to remove it.
+* **Solder on the VMM-1626L-R:** 
+Its time to connect the VMM-1627L-R to the amplifier since it is ready!
+We will solder the VMM OUT to the positive (+) and the VMM GND to negative (-). VMM power (VDD) will be hooked right up to the breakout board VCC
+![MAX4466 pinout](images/MAX4466_TOP_PINOUT.jpg)
+
+### 2. Prepare the VMM-1627L-R
 
 Here is the datasheet (you will need it): https://puiaudio.com/file/specs-VMM-1627L-R.pdf
 
@@ -80,16 +91,6 @@ It is **CRUCIAL** you do not cover the relief hole on the other side of the micr
 
 We will get into modifying the amplifier and attaching the microphone onto it next.
 
-### 2. MAX4466 Preamplifier Modification
-Stock MAX4466 breakout boards include a pull-up bias resistor designed for 2-pin electret capsules. Because the VMM-1627L-R is an active 3-pin MEMS microphone with its own internal buffer, the DC bias resistor must be removed:
-* **Remove electret microphone** Desolder the microphone + and - pins and pop it out!
-* **Remove Resistor R1:** Desolder or cut R1 connected to the positive input pad to decouple DC power from the audio input line.
-![MAX4466 Intact](images/MAX4466.jpg)
-It is easier to remove if you put a glob of solder on the tip and then cover it to remove it.
-* **Solder on the VMM-1626L-R:** 
-Its time to connect the VMM-1627L-R to the amplifier since it is ready!
-We will solder the VMM OUT to the positive (+) and the VMM GND to negative (-). VMM power (VDD) will be hooked right up to the breakout board VCC
-![MAX4466 pinout](images/MAX4466_TOP_PINOUT.jpg)
 
 ### 3. Battery Modification and Polarity Check
 
