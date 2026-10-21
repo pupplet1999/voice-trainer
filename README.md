@@ -60,69 +60,52 @@ I am not an expert just a girl frustrated with not remembering to use my voice. 
 ## Hardware Modifications & Wiring
 
 ### 1. Prepare the VMM-1627L-R
+...
+The image shows the mic wired up on the MAX4466 amplifier:
 
-We are attaching jumpers to the pads of the microphone. We will solder it to the amp board in the next section.
-
-Here is the datasheet (you will need it): https://puiaudio.com/file/specs-VMM-1627L-R.pdf
-
-Pay close attention to the pad layout and how there is an identifiable dot closer to pads 6, 5, 4.
-
-This is by far probably the most challenging part of the build. It requires patience and a steady hand but it is doable for anyone. Infact, I successfully did it on my first attempt. I recommend watching this video on 'dead bug soldering': https://www.youtube.com/watch?v=q53uPn1mKc0
-
-I prepared a space on a piece of plywood and taped the VMM-1627L-R down into place but made sure to keep the top open. Orient it so you know which pads are on which side using the datasheet.
-
-Flux is a **MUST**. I put a little bit of liquid flux into one of my used estrodial needles hahaha and squirted it onto the pads. I then followed the datasheet from here. I soldered a wire to pad 3 for power (VDD) and to pad 6 for the output (OUT). Any other pad can be used for ground. I ended up choosing pad 4 for my ground but it doesn't matter.
-
-The image shows the mic wired up on the MAX4466 amplifier
-![MAXX4466 with mic](images/MAX4466_MIC_TOP.jpg)
+<img src="images/MAX4466_MIC_TOP.jpg" alt="MAXX4466 with mic" width="450" />
 
 After the pads are soldered on, make sure to secure it in place with some super glue or hot glue.
-
-It is **CRUCIAL** you do not cover the relief hole on the other side of the microphone as this will destroy the microphone.
-
-We will get into modifying the amplifier and attaching the microphone onto it next.
-
+...
 
 ### 2. MAX4466 Preamplifier Modification
 Stock MAX4466 breakout boards include a pull-up bias resistor designed for 2-pin electret capsules. Because the VMM-1627L-R is an active 3-pin MEMS microphone with its own internal buffer, the DC bias resistor must be removed:
-* **Remove electret microphone** Desolder the microphone + and - pins and pop it out!
-* **Remove Resistor R1:** Desolder or cut R1 connected to the positive input pad to decouple DC power from the audio input line.
-![MAX4466 Intact](images/MAX4466.jpg)
+- **Remove electret microphone:** Desolder the microphone + and - pins and pop it out!
+- **Remove Resistor R1:** Desolder or cut R1 connected to the positive input pad to decouple DC power from the audio input line.
+
+<img src="images/MAX4466.jpg" alt="MAX4466 Intact" width="450" />
+
 It is easier to remove if you put a glob of solder on the tip and then cover it to remove it.
-* **Solder on the VMM-1626L-R:** 
+- **Solder on the VMM-1626L-R:** 
+
 Its time to connect the VMM-1627L-R to the amplifier since it is ready!
-We will solder the VMM OUT to the positive (+) and the VMM GND to negative (-). VMM power (VDD) will be hooked right up to the breakout board VCC
-![MAX4466 pinout](images/MAX4466_TOP_PINOUT.jpg)
+We will solder the VMM OUT to the positive (+) and the VMM GND to negative (-). VMM power (VDD) will be hooked right up to the breakout board VCC.
+
+<img src="images/MAX4466_TOP_PINOUT.jpg" alt="MAX4466 pinout" width="450" />
 
 ### 3. Battery Modification and Polarity Check
-
-Before plugging your battery into the ESP32 board, it is imperative that you check the polarity of the JST plug to make sure the positive and negative match. If they do not, you **MUST** pop the pins out and swap their positions. You can use something small to pry the plastic up and pull the pins out. Make sure not to short it.
-
-Next you should cut in the positive wire and solder in a switch. Put it on the middle and outer pin. It doesn't matter which one. Make sure to add your heat shrink wrap before soldering.
-
-![Battery Modification](images/BATTERY_MOD.jpg)
+...
+<img src="images/BATTERY_MOD.jpg" alt="Battery Modification" width="450" />
 
 ### 4. Haptic Motor Driver and Coin Motor Assembly
- This is thankfully very easy. Simply solder the red wire to the + and blue wire to the - on the DRV2605L board.
+This is thankfully very easy. Simply solder the red wire to the + and blue wire to the - on the DRV2605L board.
 
-![DRV2605L Front](images/DRIVER_FRONT.jpg)
-![DRV2605L Back](images/DRIVER_BACK.jpg)
-
-
+| Component Front | Component Back |
+| :---: | :---: |
+| <img src="images/DRIVER_FRONT.jpg" alt="DRV2605L Front" width="320" /> | <img src="images/DRIVER_BACK.jpg" alt="DRV2605L Back" width="320" /> |
 
 ### 5. Final Assembly
-
 Time to put it all together! Place the bone conducting mic/amplifier combo into the neck box. Thread the three wires through the hole in the side and then solder them into the pins on the ESP32. 
 
-![Mic Assembly](images/MIC_IN_CASE.jpg)
+<img src="images/MIC_IN_CASE.jpg" alt="Mic Assembly" width="450" />
 
 You will put power wire (red) to the 3.3v pin, ground (black) to GND, and the analog output (green) to pin 14.
 
-![Wiring](images/WIRING_PINOUT.jpg)
+<img src="images/WIRING_PINOUT.jpg" alt="Wiring" width="450" />
 
 Lastly, plug in everything you need! STEMMA QT and battery connectors to each part.
 
-![Connected Cables](images/WIRING_COMPLETE.jpg)
+<img src="images/WIRING_COMPLETE.jpg" alt="Connected Cables" width="450" />
 
 After all of this, it is time to throw it all into a case. I have a **VERY** rough 3D printed case so far but it works. I wouldn't be caught dead wearing it in public though :'(
 
@@ -156,7 +139,7 @@ The current case design is a bit bland.
 
 ### 1. Custom PCB for Mic/Amp
 
-I think that this project would benefit greatly from a custom PCB, but I am sadly not an electrical engineer. I have working plans now for a neck node board. I just have to get the time to order it and see if it works. The plans are in the pcb/neck_node files.
+I think that this project would benefit greatly from a custom PCB, but I am sadly not an electrical engineer. While the MAX4466 schematics and board are publically avaliable on the Adafruit website, I have yet to create a modified version of the amplifier board that includes a VMM-1627L-R instead of an electret microphone as well as remove the pull-up resistor. Sadly these things both cost time and money.
 
 ### 2. Bluetooth/Phone integration
 
